@@ -33,10 +33,9 @@ RSpec.describe "The reservations endpoint", type: :request do
     it 'creates a reservation belonging to the guest' do
       post "/v1/reservations", params: { payload: payload }
 
-      debugger
-
       expect(guest).to be_present
       expect(guest.email).to eq "wayne_woodbridge@bnb.com"
+      expect(guest.phone_numbers).to eq "639123456789"
 
       expect(guest.reservations.size).to eq 1
       expect(guest.reservations.first.code).to eq reservation_code

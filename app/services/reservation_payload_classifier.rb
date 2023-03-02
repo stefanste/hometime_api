@@ -1,6 +1,8 @@
 class ReservationPayloadClassifier
   class UnknownPayloadError < StandardError; end
 
+  # When adding new partners, it is important to ensure only one payload classification matches;
+  # add to tests in spec for this class to ensure this continues to be the case.
   PARTNERS = {
     'AIRBNB' => Classifiers::AirBnb,
     'BOOKING.COM' => Classifiers::BookingDotCom

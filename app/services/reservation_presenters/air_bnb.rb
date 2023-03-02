@@ -17,7 +17,7 @@ module ReservationPresenters
     end
 
     def phone_numbers
-      payload.dig('guest', 'phone_numbers')
+      payload.dig('guest', 'phone')
     end
 
     def reservation_code
