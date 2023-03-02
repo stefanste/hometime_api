@@ -4,12 +4,13 @@ Small Rails app with API endpoint which receives reservation payloads from diffe
 
 ## Dependencies
 
-Ruby 3.1.2
-SQLite3
+- Ruby 3.1.2
+- SQLite3
 
 ## Usage
 
 Ensure the database has been created and migrations have been run.
+
 Start up the web server with default config with `bin/rails server`, then to simulate an example reservation:
 
 ```console
