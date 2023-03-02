@@ -1,24 +1,25 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Small Rails app with API endpoint which receives reservation payloads from different Hometime partners
 
-Things you may want to cover:
+## Dependencies
 
-* Ruby version
+Ruby 3.1.2
+SQLite3
 
-* System dependencies
+## Usage
 
-* Configuration
+Ensure the database has been created and migrations have been run.
+Start up the web server with default config with `bin/rails server`, then to simulate an example reservation:
 
-* Database creation
+```console
+curl -X POST http://127.0.0.1:3000/v1/reservations \
+   -H 'Content-Type: application/json' \
+   -d @spec/fixtures/airbnb_payload.json
+```
 
-* Database initialization
+## Tests
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```console
+bundle exec rspec
+```

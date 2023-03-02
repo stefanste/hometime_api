@@ -44,9 +44,6 @@ class UpsertReservation
 
   attr_reader :payload, :reservation_source
 
-  def upsert_guest
-  end
-
   def payload_presenter
     @payload_presenter ||= PARTNERS[reservation_source].new(payload)
   end
