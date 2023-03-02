@@ -30,23 +30,38 @@ RSpec.describe "The reservations endpoint", type: :request do
   let(:guest) { Guest.find_by(email: email) }
 
   context 'creating a reservation' do
-    it 'persists a reservation with the corresponding details' do
-      post "/v1/reservations", params: { payload: payload }
-
-      expect(reservation).to exist 
-      expect(reservation.status).to eq "accepted"
-      expect(reservation.start_date).to eq "2021-04-14"
-      expect(reservation.end_date).to eq "2021-04-18"
-    end
-
     it 'creates a reservation belonging to the guest' do
       post "/v1/reservations", params: { payload: payload }
+
+      debugger
 
       expect(guest).to be_present
       expect(guest.email).to eq "wayne_woodbridge@bnb.com"
 
       expect(guest.reservations.size).to eq 1
       expect(guest.reservations.first.code).to eq reservation_code
+      expect(guest.reservations.first.status).to eq "accepted"
+      expect(guest.reservations.first.start_date).to eq "2021-04-14"
+      expect(guest.reservations.first.end_date).to eq "2021-04-18"
+    end
+
+    it 'responds with the created resource' do
+      post "/v1/reservations", params: { payload: payload }
+
+      expect(response.status).to eq 200
+      expect(JSON.parse(response.body)['code']).to eq "YYY12345678"
+    end
+
+    context 'when a payload can not be matched to any known partner' do
+      let(:unknown_payload) { payload.except(:status) }
+
+      it 'returns a bad request response' do
+        post "/v1/reservations", params: { payload: unknown_payload }
+
+        expect(reservation).not_to be_present
+        expect(JSON.parse(response.body)['error_type']).to eq "ReservationPayloadClassifier::UnknownPayloadError"
+        expect(response.status).to eq 400
+      end
     end
 
     context 'when the payload of the request is missing or malformed' do
@@ -55,7 +70,8 @@ RSpec.describe "The reservations endpoint", type: :request do
       it 'returns a bad request response' do
         post "/v1/reservations", params: { payload: payload }
 
-        expect(reservation.present?).to be false
+        expect(reservation).not_to be_present
+        expect(JSON.parse(response.body)['error']).to eq "Payload missing"
         expect(response.status).to eq 400
       end
     end
@@ -67,9 +83,10 @@ RSpec.describe "The reservations endpoint", type: :request do
     end
 
     it 'updates the reservation details from the submitted payload' do
-      post "/v1/reservations", params: payload.merge("status" => "cancelled")
+      post "/v1/reservations", params: { payload: payload.merge("status" => "cancelled") }
 
       expect(reservation.status).to eq "cancelled"
+      expect(guest.reservations.size).to eq 1
     end
   end
 end
